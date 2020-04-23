@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { View, Image, Text, TouchableOpacity, FlatList } from 'react-native';
+import { API_URL } from 'react-native-dotenv';
 
 import api from '../../services/api';
 
@@ -29,15 +30,21 @@ export default function Incidents() {
       return;
     }
 
-    setLoading(true);
+    try {
+      console.log(API_URL);
 
-    const response = await api.get('incidents', { params: { page } });
+      setLoading(true);
 
-    setIncidents([...incidents, ...response.data.incidents]);
-    setTotal(response.headers['x-total-count']);
+      const response = await api.get('incidents', { params: { page } });
 
-    setPage(page + 1);
-    setLoading(false);
+      setIncidents([...incidents, ...response.data.incidents]);
+      setTotal(response.headers['x-total-count']);
+
+      setPage(page + 1);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
   }
 
   useEffect(() => {
